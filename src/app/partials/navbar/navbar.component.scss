@@ -1,6 +1,6 @@
 .wrapper{
   width: 100vw;
-  height: 100vh;
+  //height: 100vh;
 }
 .bg-light{
   background-color: #003B5C!important;
@@ -32,6 +32,8 @@
 li a {
   display: block;
   text-decoration: none;
+  cursor: pointer;
+  text-transform: capitalize;
 }
 
 /* Change the link color on hover */

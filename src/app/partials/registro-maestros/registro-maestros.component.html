@@ -9,9 +9,9 @@
         </div>
         <mat-form-field class="mat-input" appearance="outline">
             <mat-label>ID de trabajador</mat-label>
-            <input matInput [(ngModel)]="maestro.matricula" name="id" placeholder="Escribe ID o matrícula">
+            <input matInput [(ngModel)]="maestro.id_trabajador" name="id" placeholder="Escribe ID de trabajador">
         </mat-form-field>
-        <div *ngIf="errors.matricula" class="invalid-feedback">{{ errors.matricula }}</div>
+        <div *ngIf="errors.id_trabajador" class="invalid-feedback">{{ errors.id_trabajador }}</div>
 
         <mat-form-field class="mat-input" appearance="outline">
             <mat-label>Nombre</mat-label>
@@ -68,14 +68,14 @@
 
         <mat-form-field class="mat-input" appearance="outline">
           <mat-label>Cubículo</mat-label>
-          <input matInput [(ngModel)]="maestro.cubiculo" placeholder="Escribe el cubículo" style="text-transform: uppercase;">
+          <input matInput [(ngModel)]="maestro.cubiculo" placeholder="Escribe el cubículo">
         </mat-form-field>
         <div *ngIf="errors.cubiculo" class="invalid-feedback">{{ errors.cubiculo }}</div>
 
         <mat-form-field class="mat-input" appearance="outline">
           <mat-label>Área de investigación</mat-label>
-          <mat-select>
-            <mat-option *ngFor="let area of areas" [value]="area.value">
+          <mat-select [(ngModel)]="maestro.area_investigacion">
+            <mat-option *ngFor="let area of areas" [value]="area.viewValue">
               {{area.viewValue}}
             </mat-option>
           </mat-select>

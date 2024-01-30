@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { ValidatorService } from './tools/validator.service';
 import { ErrorsService } from './tools/errors.service';
 import { FacadeService } from './facade.service';
-import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -13,7 +13,7 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class AlumnosService {
+export class MaestrosService {
 
   constructor(
     private http: HttpClient,
@@ -22,31 +22,31 @@ export class AlumnosService {
     private facadeService: FacadeService
   ) { }
 
-  public esquemaAlumno(){
+  public esquemaMaestro(){
     return {
       'rol':'',
-      'matricula': '',
+      'id_trabajador': '',
       'first_name': '',
       'last_name': '',
       'email': '',
       'password': '',
       'confirmar_password': '',
       'fecha_nacimiento': '',
-      'curp': '',
-      'rfc': '',
-      'edad': '',
       'telefono': '',
-      'ocupacion': '',
+      'rfc': '',
+      'cubiculo': '',
+      'area_investigacion': '',
+      'materias_json': []
     }
   }
 
   //Validación para el formulario
-  public validarAlumno(data: any, editar: boolean){
-    console.log("Validando alumno... ", data);
+  public validarMaestro(data: any, editar: boolean){
+    console.log("Validando maestro... ", data);
     let error: any = [];
 
-    if(!this.validatorService.required(data["matricula"])){
-      error["matricula"] = this.errorService.required;
+    if(!this.validatorService.required(data["id_trabajador"])){
+      error["id_trabajador"] = this.errorService.required;
     }
 
     if(!this.validatorService.required(data["first_name"])){
@@ -79,16 +79,6 @@ export class AlumnosService {
       error["fecha_nacimiento"] = this.errorService.required;
     }
 
-    if(!this.validatorService.required(data["curp"])){
-      error["curp"] = this.errorService.required;
-    }else if(!this.validatorService.min(data["curp"], 18)){
-      error["curp"] = this.errorService.min(18);
-      alert("La longitud de caracteres de la CURP es menor, deben ser 18");
-    }else if(!this.validatorService.max(data["curp"], 18)){
-      error["curp"] = this.errorService.max(18);
-      alert("La longitud de caracteres de la CURP es mayor, deben ser 18");
-    }
-
     if(!this.validatorService.required(data["rfc"])){
       error["rfc"] = this.errorService.required;
     }else if(!this.validatorService.min(data["rfc"], 12)){
@@ -99,52 +89,34 @@ export class AlumnosService {
       alert("La longitud de caracteres deL RFC es mayor, deben ser 13");
     }
 
-    if(!this.validatorService.required(data["edad"])){
-      error["edad"] = this.errorService.required;
-    }else if(!this.validatorService.numeric(data["edad"])){
-      alert("El formato es solo números");
-    }
-
     if(!this.validatorService.required(data["telefono"])){
       error["telefono"] = this.errorService.required;
     }
 
-    if(!this.validatorService.required(data["ocupacion"])){
-      error["ocupacion"] = this.errorService.required;
+    if(!this.validatorService.required(data["cubiculo"])){
+      error["cubiculo"] = this.errorService.required;
     }
 
+    if(!this.validatorService.required(data["area_investigacion"])){
+      error["area_investigacion"] = this.errorService.required;
+    }
+
+    if(data["materias_json"].length == 0){
+      alert("Debes seleccionar materias para poder registrarte.");
+    }
     //Return arreglo
     return error;
   }
 
   //Aquí van los servicios HTTP
-  //Servicio para registrar un nuevo alumno
-  public registrarAlumno (data: any): Observable <any>{
-    return this.http.post<any>(`${environment.url_api}/alumnos/`,data, httpOptions);
+  //Servicio para registrar un nuevo usuario
+  public registrarMaestro (data: any): Observable <any>{
+    return this.http.post<any>(`${environment.url_api}/maestros/`,data, httpOptions);
   }
 
-  public obtenerListaAlumnos (): Observable <any>{
+  public obtenerListaMaestros (): Observable <any>{
     var token = this.facadeService.getSessionToken();
     var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
-    return this.http.get<any>(`${environment.url_api}/lista-alumnos/`, {headers:headers});
+    return this.http.get<any>(`${environment.url_api}/lista-maestros/`, {headers:headers});
   }
-
-  // //Obtener un solo usuario dependiendo su ID
-  // public getUserByID(idUser: Number){
-  //   return this.http.get<any>(`${environment.url_api}/users/?id=${idUser}`,httpOptions);
-  // }
-
-  // //Servicio para actualizar un usuario
-  // public editarUsuario (data: any): Observable <any>{
-  //   var token = this.facadeService.getSessionToken();
-  //   var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
-  //   return this.http.put<any>(`${environment.url_api}/users-edit/`, data, {headers:headers});
-  // }
-
-  // //Eliminar usuario
-  // public eliminarUsuario(idUser: number): Observable <any>{
-  //   var token = this.facadeService.getSessionToken();
-  //   var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
-  //   return this.http.delete<any>(`${environment.url_api}/users-edit/?id=${idUser}`,{headers:headers});
-  // }
 }

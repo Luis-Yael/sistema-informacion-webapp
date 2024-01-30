@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { MaestrosService } from 'src/app/services/maestros.service';
+import { ActivatedRoute, Router } from '@angular/router';
+declare var $:any;
 
 @Component({
   selector: 'app-registro-maestros',
@@ -18,6 +21,10 @@ export class RegistroMaestrosComponent implements OnInit{
   public maestro:any= {};
   public errors:any={};
   public editar:boolean = false;
+  public idUser: Number = 0;
+  //Check
+  public valoresCheckbox: any = [];
+  public materias_json: any [] = [];
 
   //Para el select
   public areas: any[] = [
@@ -41,13 +48,28 @@ export class RegistroMaestrosComponent implements OnInit{
     {value: '10', nombre: 'Administración de S.O.'},
   ];
   constructor(
-    private location : Location
+    private location : Location,
+    private maestrosService: MaestrosService,
+    private router: Router,
+    public activatedRoute: ActivatedRoute,
   ){
 
   }
 
   ngOnInit() {
-
+    this.maestro = this.maestrosService.esquemaMaestro();
+    this.maestro.rol = this.rol;
+    //El primer if valida si existe un parámetro en la URL
+    if(this.activatedRoute.snapshot.params['id'] != undefined){
+      this.editar = true;
+      //Asignamos a nuestra variable global el valor del ID que viene por la URL
+      this.idUser = this.activatedRoute.snapshot.params['id'];
+      console.log("ID User: ", this.idUser);
+      //Al iniciar la vista obtiene el usuario por su ID
+      //this.obtenerUserByID();
+    }
+    //Imprimir datos en consola
+    console.log("Maestro: ", this.maestro);
   }
 
   public regresar(){
@@ -89,6 +111,50 @@ export class RegistroMaestrosComponent implements OnInit{
   }
 
   public registrar(){
+    //Validar
+    this.errors = [];
+
+    this.errors = this.maestrosService.validarMaestro(this.maestro, this.editar);
+    if(!$.isEmptyObject(this.errors)){
+      return false;
+    }
+    //Validar la contraseña
+    if(this.maestro.password == this.maestro.confirmar_password){
+      //Aquí si todo es correcto vamos a registrar - aquí se manda a llamar al servicio
+      this.maestrosService.registrarMaestro(this.maestro).subscribe(
+        (response)=>{
+          alert("Usuario registrado correctamente");
+          console.log("Usuario registrado: ", response);
+          this.router.navigate(["/"]);
+        }, (error)=>{
+          alert("No se pudo registrar usuario");
+        }
+      )
+    }else{
+      alert("Las contraseñas no coinciden");
+      this.maestro.password="";
+      this.maestro.confirmar_password="";
+    }
+  }
+
+  public revisarCheckboxMaterias(){
+    this.materias_json = [];
+    //Obtener valores de los checkox
+    let valoresCheck : any = [];
+    $("input[name=ingc]:checked").each(function(this:any) {
+      valoresCheck.push($(this).val());
+      alert("Seleccionado el input " + $(this).val());
+    });
+    //console.log("Valores: ", valoresCheck);
+    this.valoresCheckbox = valoresCheck;
+    console.log("Array: ", this.valoresCheckbox);
+
+    // this.valoresCheckbox.forEach(value => {
+    //   let nombre = value.split("-")[0];
+    //   let costo = value.split("-")[1];
+    //   this.ingredientes_json.push({"nombre": nombre, "costo": Number(costo)})
+    // });
+    console.log("Materias_Json: ", this.materias_json);
 
   }
 
@@ -97,7 +163,18 @@ export class RegistroMaestrosComponent implements OnInit{
   }
 
   public checkboxChange(event:any){
-
+    //console.log("Evento: ", event);
+    if(event.checked){
+      this.maestro.materias_json.push(event.source.value)
+    }else{
+      console.log(event.source.value);
+      this.maestro.materias_json.forEach((materia, i) => {
+        if(materia == event.source.value){
+          this.maestro.materias_json.splice(i,1)
+        }
+      });
+    }
+    console.log("Array materias: ", this.maestro);
   }
 
 }

@@ -104,7 +104,14 @@ export class AdministradoresService {
   //Aquí van los servicios HTTP
   //Servicio para registrar un nuevo usuario
   public registrarAdmin (data: any): Observable <any>{
-    return this.http.post<any>(`${environment.url_api}/users/`,data, httpOptions);
+    return this.http.post<any>(`${environment.url_api}/admin/`,data, httpOptions);
   }
+
+  public obtenerListaAdmins (): Observable <any>{
+    var token = this.facadeService.getSessionToken();
+    var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
+    return this.http.get<any>(`${environment.url_api}/lista-admins/`, {headers:headers});
+  }
+
 
 }

@@ -28,6 +28,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 //Cambia el idioma a español
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { RegistroAlumnosComponent } from './partials/registro-alumnos/registro-alumnos.component';
+import { AdminScreenComponent } from './screens/admin-screen/admin-screen.component';
+import { AlumnosScreenComponent } from './screens/alumnos-screen/alumnos-screen.component';
+import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-screen.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ import { RegistroAlumnosComponent } from './partials/registro-alumnos/registro-a
     RegistroScreenComponent,
     RegistroAlumnosComponent,
     RegistroAdminComponent,
-    RegistroMaestrosComponent
+    RegistroMaestrosComponent,
+    AdminScreenComponent,
+    AlumnosScreenComponent,
+    MaestrosScreenComponent
   ],
   imports: [
     BrowserModule,
