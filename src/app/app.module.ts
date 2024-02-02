@@ -31,6 +31,9 @@ import { RegistroAlumnosComponent } from './partials/registro-alumnos/registro-a
 import { AdminScreenComponent } from './screens/admin-screen/admin-screen.component';
 import { AlumnosScreenComponent } from './screens/alumnos-screen/alumnos-screen.component';
 import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-screen.component';
+import { NgChartsModule } from 'ng2-charts';
+import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,8 @@ import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-scre
     RegistroMaestrosComponent,
     AdminScreenComponent,
     AlumnosScreenComponent,
-    MaestrosScreenComponent
+    MaestrosScreenComponent,
+    GraficasScreenComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +66,10 @@ import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-scre
     MatPaginatorModule,
     MatDialogModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgChartsModule,
+    NgChartsModule,
+    MatDividerModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-ES'},
