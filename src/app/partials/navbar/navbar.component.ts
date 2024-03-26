@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FacadeService } from 'src/app/services/facade.service';
 declare var $:any;
 
@@ -13,9 +13,11 @@ export class NavbarComponent implements OnInit{
   @Input() rol:string ="";
 
   public token : string = "";
+  public editar:boolean = false;
 
   constructor(
     private facadeService: FacadeService,
+    public activatedRoute: ActivatedRoute,
     private router: Router
   ){}
 
@@ -25,6 +27,10 @@ export class NavbarComponent implements OnInit{
     //Validar que haya inicio de sesión
     //Obtengo el token del login
     this.token = this.facadeService.getSessionToken();
+    //El primer if valida si existe un parámetro en la URL
+    if(this.activatedRoute.snapshot.params['id'] != undefined){
+      this.editar = true;
+    }
 
   }
 

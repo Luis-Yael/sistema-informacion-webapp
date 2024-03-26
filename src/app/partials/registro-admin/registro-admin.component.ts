@@ -11,6 +11,8 @@ declare var $:any;
 })
 export class RegistroAdminComponent implements OnInit{
   @Input() rol: string = "";
+  @Input() datos_user: any = {};
+
   //Para contraseñas
   public hide_1: boolean = false;
   public hide_2: boolean = false;
@@ -32,16 +34,17 @@ export class RegistroAdminComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.admin = this.administradoresService.esquemaAdmin();
-    this.admin.rol = this.rol;
     //El primer if valida si existe un parámetro en la URL
     if(this.activatedRoute.snapshot.params['id'] != undefined){
       this.editar = true;
       //Asignamos a nuestra variable global el valor del ID que viene por la URL
       this.idUser = this.activatedRoute.snapshot.params['id'];
       console.log("ID User: ", this.idUser);
-      //Al iniciar la vista obtiene el usuario por su ID
-      //this.obtenerUserByID();
+      //Al iniciar la vista asignamos los datos del user
+      this.admin = this.datos_user;
+    }else{
+      this.admin = this.administradoresService.esquemaAdmin();
+      this.admin.rol = this.rol;
     }
     //Imprimir datos en consola
     console.log("Admin: ", this.admin);
