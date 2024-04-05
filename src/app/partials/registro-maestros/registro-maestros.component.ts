@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { MaestrosService } from 'src/app/services/maestros.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FacadeService } from 'src/app/services/facade.service';
 declare var $:any;
 
 @Component({
@@ -12,6 +13,7 @@ declare var $:any;
 export class RegistroMaestrosComponent implements OnInit{
 
   @Input() rol: string = "";
+  @Input() datos_user: any = {};
   //Para contraseñas
   public hide_1: boolean = false;
   public hide_2: boolean = false;
@@ -19,6 +21,7 @@ export class RegistroMaestrosComponent implements OnInit{
   public inputType_2: string = 'password';
 
   public maestro:any= {};
+  public token: string = "";
   public errors:any={};
   public editar:boolean = false;
   public idUser: Number = 0;
@@ -52,21 +55,24 @@ export class RegistroMaestrosComponent implements OnInit{
     private maestrosService: MaestrosService,
     private router: Router,
     public activatedRoute: ActivatedRoute,
+    private facadeService: FacadeService
   ){
 
   }
 
   ngOnInit() {
-    this.maestro = this.maestrosService.esquemaMaestro();
-    this.maestro.rol = this.rol;
     //El primer if valida si existe un parámetro en la URL
     if(this.activatedRoute.snapshot.params['id'] != undefined){
       this.editar = true;
       //Asignamos a nuestra variable global el valor del ID que viene por la URL
       this.idUser = this.activatedRoute.snapshot.params['id'];
       console.log("ID User: ", this.idUser);
-      //Al iniciar la vista obtiene el usuario por su ID
-      //this.obtenerUserByID();
+      //Al iniciar la vista asignamos los datos del user
+      this.maestro = this.datos_user;
+    }else{
+      this.maestro = this.maestrosService.esquemaMaestro();
+      this.maestro.rol = this.rol;
+      this.token = this.facadeService.getSessionToken();
     }
     //Imprimir datos en consola
     console.log("Maestro: ", this.maestro);
@@ -125,7 +131,11 @@ export class RegistroMaestrosComponent implements OnInit{
         (response)=>{
           alert("Usuario registrado correctamente");
           console.log("Usuario registrado: ", response);
-          this.router.navigate(["/"]);
+          if(this.token != ""){
+            this.router.navigate(["home"]);
+           }else{
+             this.router.navigate(["/"]);
+           }
         }, (error)=>{
           alert("No se pudo registrar usuario");
         }
@@ -137,29 +147,26 @@ export class RegistroMaestrosComponent implements OnInit{
     }
   }
 
-  public revisarCheckboxMaterias(){
-    this.materias_json = [];
-    //Obtener valores de los checkox
-    let valoresCheck : any = [];
-    $("input[name=ingc]:checked").each(function(this:any) {
-      valoresCheck.push($(this).val());
-      alert("Seleccionado el input " + $(this).val());
-    });
-    //console.log("Valores: ", valoresCheck);
-    this.valoresCheckbox = valoresCheck;
-    console.log("Array: ", this.valoresCheckbox);
-
-    // this.valoresCheckbox.forEach(value => {
-    //   let nombre = value.split("-")[0];
-    //   let costo = value.split("-")[1];
-    //   this.ingredientes_json.push({"nombre": nombre, "costo": Number(costo)})
-    // });
-    console.log("Materias_Json: ", this.materias_json);
-
-  }
-
   public actualizar(){
+    //Validación
+    this.errors = [];
 
+    this.errors = this.maestrosService.validarMaestro(this.maestro, this.editar);
+    if(!$.isEmptyObject(this.errors)){
+      return false;
+    }
+    console.log("Pasó la validación");
+
+    this.maestrosService.editarMaestro(this.maestro).subscribe(
+      (response)=>{
+        alert("Maestro editado correctamente");
+        console.log("Maestro editado: ", response);
+        //Si se editó, entonces mandar al home
+        this.router.navigate(["home"]);
+      }, (error)=>{
+        alert("No se pudo editar el maestro");
+      }
+    );
   }
 
   public checkboxChange(event:any){
@@ -177,4 +184,16 @@ export class RegistroMaestrosComponent implements OnInit{
     console.log("Array materias: ", this.maestro);
   }
 
+  public revisarSeleccion(nombre: string){
+    if(this.maestro.materias_json){
+      var busqueda = this.maestro.materias_json.find((element)=>element==nombre);
+      if(busqueda != undefined){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      return false;
+    }
+  }
 }

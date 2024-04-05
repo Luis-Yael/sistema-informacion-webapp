@@ -34,6 +34,7 @@ import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-scre
 import { NgChartsModule } from 'ng2-charts';
 import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { EliminarUserModalComponent } from './modals/eliminar-user-modal/eliminar-user-modal.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { MatDividerModule } from '@angular/material/divider';
     AdminScreenComponent,
     AlumnosScreenComponent,
     MaestrosScreenComponent,
-    GraficasScreenComponent
+    GraficasScreenComponent,
+    EliminarUserModalComponent
   ],
   imports: [
     BrowserModule,

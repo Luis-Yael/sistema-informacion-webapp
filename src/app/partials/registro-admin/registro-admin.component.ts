@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdministradoresService } from 'src/app/services/administradores.service';
+import { FacadeService } from 'src/app/services/facade.service';
 declare var $:any;
 
 @Component({
@@ -20,6 +21,7 @@ export class RegistroAdminComponent implements OnInit{
   public inputType_2: string = 'password';
 
   public admin:any= {};
+  public token: string = "";
   public errors:any={};
   public editar:boolean = false;
   public idUser: Number = 0;
@@ -28,7 +30,8 @@ export class RegistroAdminComponent implements OnInit{
     private location : Location,
     private router: Router,
     public activatedRoute: ActivatedRoute,
-    private administradoresService: AdministradoresService
+    private administradoresService: AdministradoresService,
+    private facadeService: FacadeService
   ){
 
   }
@@ -45,6 +48,7 @@ export class RegistroAdminComponent implements OnInit{
     }else{
       this.admin = this.administradoresService.esquemaAdmin();
       this.admin.rol = this.rol;
+      this.token = this.facadeService.getSessionToken();
     }
     //Imprimir datos en consola
     console.log("Admin: ", this.admin);
@@ -94,7 +98,11 @@ export class RegistroAdminComponent implements OnInit{
          (response)=>{
            alert("Usuario registrado correctamente");
            console.log("Usuario registrado: ", response);
-           this.router.navigate(["/"]);
+           if(this.token != ""){
+            this.router.navigate(["home"]);
+           }else{
+             this.router.navigate(["/"]);
+           }
          }, (error)=>{
            alert("No se pudo registrar usuario");
          }
@@ -107,7 +115,25 @@ export class RegistroAdminComponent implements OnInit{
   }
 
   public actualizar(){
+    //Validación
+    this.errors = [];
 
+    this.errors = this.administradoresService.validarAdmin(this.admin, this.editar);
+    if(!$.isEmptyObject(this.errors)){
+      return false;
+    }
+    console.log("Pasó la validación");
+
+    this.administradoresService.editarAdmin(this.admin).subscribe(
+      (response)=>{
+        alert("Administrador editado correctamente");
+        console.log("Admin editado: ", response);
+        //Si se editó, entonces mandar al home
+        this.router.navigate(["home"]);
+      }, (error)=>{
+        alert("No se pudo editar el administrador");
+      }
+    );
   }
 
 }

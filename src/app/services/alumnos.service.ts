@@ -129,22 +129,22 @@ export class AlumnosService {
     return this.http.get<any>(`${environment.url_api}/lista-alumnos/`, {headers:headers});
   }
 
-  // //Obtener un solo usuario dependiendo su ID
-  // public getUserByID(idUser: Number){
-  //   return this.http.get<any>(`${environment.url_api}/users/?id=${idUser}`,httpOptions);
-  // }
+  //Obtener un solo alumno dependiendo su ID
+  public getAlumnoByID(idUser: Number){
+    return this.http.get<any>(`${environment.url_api}/alumnos/?id=${idUser}`,httpOptions);
+  }
 
-  // //Servicio para actualizar un usuario
-  // public editarUsuario (data: any): Observable <any>{
-  //   var token = this.facadeService.getSessionToken();
-  //   var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
-  //   return this.http.put<any>(`${environment.url_api}/users-edit/`, data, {headers:headers});
-  // }
+  //Servicio para actualizar un usuario
+  public editarAlumno (data: any): Observable <any>{
+    var token = this.facadeService.getSessionToken();
+    var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
+    return this.http.put<any>(`${environment.url_api}/alumnos-edit/`, data, {headers:headers});
+  }
 
-  // //Eliminar usuario
-  // public eliminarUsuario(idUser: number): Observable <any>{
-  //   var token = this.facadeService.getSessionToken();
-  //   var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
-  //   return this.http.delete<any>(`${environment.url_api}/users-edit/?id=${idUser}`,{headers:headers});
-  // }
+  //Eliminar Admin
+  public eliminarAlumno(idUser: number): Observable <any>{
+    var token = this.facadeService.getSessionToken();
+    var headers = new HttpHeaders({ 'Content-Type': 'application/json' , 'Authorization': 'Bearer '+token});
+    return this.http.delete<any>(`${environment.url_api}/alumnos-edit/?id=${idUser}`,{headers:headers});
+  }
 }

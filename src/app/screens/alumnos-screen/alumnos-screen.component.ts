@@ -1,4 +1,6 @@
+import { EliminarUserModalComponent } from './../../modals/eliminar-user-modal/eliminar-user-modal.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -31,6 +33,7 @@ export class AlumnosScreenComponent implements OnInit{
     public facadeService: FacadeService,
     private alumnosService:AlumnosService,
     private router: Router,
+    public dialog: MatDialog
   ){
   }
 
@@ -99,11 +102,26 @@ export class AlumnosScreenComponent implements OnInit{
 
   //Funcion para editar
   public goEditar(idUser: number){
-    this.router.navigate(["registro/"+idUser]);
+    this.router.navigate(["registro-usuarios/alumno/"+idUser]);
   }
 
   public delete(idUser: number){
+    const dialogRef = this.dialog.open(EliminarUserModalComponent,{
+      data: {id: idUser, rol: 'alumno'}, //Se pasan valores a través del componente
+      height: '288px',
+      width: '328px',
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if(result.isDelete){
+        console.log("Alumno eliminado");
+        //Recargar página
+        window.location.reload();
+      }else{
+        alert("Alumno no eliminado ");
+        console.log("No se eliminó el alumno");
+      }
+    });
   }
 }
 //Esto va fuera de la llave que cierra la clase

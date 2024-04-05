@@ -14,7 +14,9 @@ import { AdministradoresService } from 'src/app/services/administradores.service
 export class RegistroScreenComponent implements OnInit{
 
   public tipo:string = "registro-usuarios";
+  //JSON para los usuarios (admin, maestros, alumnos)
   public user:any ={};
+
   public isUpdate:boolean = false;
   public errors:any = {};
   //Banderas para el tipo de usuario
@@ -40,10 +42,12 @@ export class RegistroScreenComponent implements OnInit{
   }
 
   ngOnInit() {
-    //console.log("TR: ", this.tipo);
-    this.rol = this.facadeService.getUserGroup();
-    //console.log("Rol: ", this.rol);
-    //El primer if valida si existe un parámetro en la URL
+    //Obtener de la URL el rol para saber cual editar
+    if(this.activatedRoute.snapshot.params['rol'] != undefined){
+      this.rol = this.activatedRoute.snapshot.params['rol'];
+      console.log("Rol detect: ", this.rol);
+    }
+    //El if valida si existe un parámetro en la URL
     if(this.activatedRoute.snapshot.params['id'] != undefined){
       this.editar = true;
       //Asignamos a nuestra variable global el valor del ID que viene por la URL
@@ -74,9 +78,35 @@ export class RegistroScreenComponent implements OnInit{
         }
       );
     }else if(this.rol == "maestro"){
-
+      this.maestrosService.getMaestroByID(this.idUser).subscribe(
+        (response)=>{
+          this.user = response;
+          //Agregamos valores faltantes
+          this.user.first_name = response.user.first_name;
+          this.user.last_name = response.user.last_name;
+          this.user.email = response.user.email;
+          this.user.tipo_usuario = this.rol;
+          this.isMaestro = true;
+          console.log("Datos maestro: ", this.user);
+        }, (error)=>{
+          alert("No se pudieron obtener los datos del usuario para editar");
+        }
+      );
     }else if(this.rol == "alumno"){
-
+      this.alumnosService.getAlumnoByID(this.idUser).subscribe(
+        (response)=>{
+          this.user = response;
+          //Agregamos valores faltantes
+          this.user.first_name = response.user.first_name;
+          this.user.last_name = response.user.last_name;
+          this.user.email = response.user.email;
+          this.user.tipo_usuario = this.rol;
+          this.isAlumno = true;
+          console.log("Datos alumno: ", this.user);
+        }, (error)=>{
+          alert("No se pudieron obtener los datos del usuario para editar");
+        }
+      );
     }
   }
 

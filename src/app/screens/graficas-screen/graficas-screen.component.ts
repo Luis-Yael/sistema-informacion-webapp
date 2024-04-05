@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import DatalabelsPlugin from 'chartjs-plugin-datalabels';
+import { AdministradoresService } from '../../services/administradores.service';
+import { ChartType, Color } from 'chart.js';
 @Component({
   selector: 'app-graficas-screen',
   templateUrl: './graficas-screen.component.html',
@@ -7,7 +9,8 @@ import DatalabelsPlugin from 'chartjs-plugin-datalabels';
 })
 export class GraficasScreenComponent implements OnInit{
   //Agregar chartjs-plugin-datalabels
-
+   //Variables
+   public total_user: any = {};
   //Histograma
   lineChartData = {
     labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -63,7 +66,8 @@ export class GraficasScreenComponent implements OnInit{
     responsive:false
   }
   pieChartPlugins = [ DatalabelsPlugin ];
-  //Circular
+
+  // Doughnut
   doughnutChartData = {
     labels: ["Administradores", "Maestros", "Alumnos"],
     datasets: [
@@ -83,11 +87,24 @@ export class GraficasScreenComponent implements OnInit{
   }
   doughnutChartPlugins = [ DatalabelsPlugin ];
 
-  constructor(){
+  constructor(
+    private administradoresServices: AdministradoresService
+  ){}
+
+  ngOnInit(): void {
+    this.obtenerTotalUsers();
+    console.log("Data: ", this.doughnutChartData);
 
   }
 
-  ngOnInit(): void {
-
+  public obtenerTotalUsers(){
+    this.administradoresServices.getTotalUsuarios().subscribe(
+      (response)=>{
+        this.total_user = response;
+        console.log("Total usuarios: ", this.total_user);
+      }, (error)=>{
+        alert("No se pudo obtener el total de cada rol de usuarios");
+      }
+    );
   }
 }
