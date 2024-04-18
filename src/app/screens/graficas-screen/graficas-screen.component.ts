@@ -9,8 +9,8 @@ import { ChartType, Color } from 'chart.js';
 })
 export class GraficasScreenComponent implements OnInit{
   //Agregar chartjs-plugin-datalabels
-   //Variables
-   public total_user: any = {};
+  //Variables
+  public total_user: any = {};
   //Histograma
   lineChartData = {
     labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -26,6 +26,7 @@ export class GraficasScreenComponent implements OnInit{
     responsive:false
   }
   lineChartPlugins = [ DatalabelsPlugin ];
+
   //Barras
   barChartData = {
     labels: ["Desarrollo Web", "Minería de Datos", "Redes", "Móviles", "Matemáticas"],
